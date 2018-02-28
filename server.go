@@ -1,15 +1,40 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
+	yaml "gopkg.in/yaml.v2"
 )
+
+type redirectDict struct {
+	Hash string `yaml:"hash"`
+	Url  string `yaml:"url"`
+}
+
+type redirectConfig struct {
+	Redirect []redirectDict `yaml:"REDIRECT"`
+}
+
+func initData() {
+	rConfigContent, _ := ioutil.ReadFile("settings.yml")
+	redirConfig := redirectConfig{}
+	err := yaml.Unmarshal(rConfigContent, &redirConfig)
+
+	if err != nil {
+		log.Fatalf("Failed to load config")
+	}
+	fmt.Println(redirConfig)
+}
 
 func main() {
 	router := gin.Default()
+
+	initData()
 
 	redisClient, redisErr := redis.Dial("tcp", os.Getenv("REDIS_HOST")+":"+os.Getenv("REDIS_PORT"))
 	if redisErr != nil {

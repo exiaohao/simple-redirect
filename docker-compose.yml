@@ -7,6 +7,7 @@ services:
       - REDIS_HOST=redis_server
       - REDIS_PORT=6379
       - REDIS_DB=0
+      - GIN_MODE=release
     ports:
       - "7788:7788"
     depends_on:
