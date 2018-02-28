@@ -1,0 +1,19 @@
+version: '2'
+services:
+  webapp:
+    build: .
+    environment:
+      - SERVER_PORT=7788
+      - REDIS_HOST=redis_server
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    ports:
+      - "7788:7788"
+    depends_on:
+      - redis_server
+    command: ["go", "run", "server.go"]
+  redis_server:
+    image: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
